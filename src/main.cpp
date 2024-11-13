@@ -5,16 +5,14 @@
 #include <VL53L1X.h>
 #include <HardwareSerial.h>
 
-    
+#define ENA 6 // ENA PWM Motor Esquerdo
+#define ENB 5 // ENB PWM Motor Direito
 
-#define ENA 5 // ENA PWM Motor Esquerdo
-#define ENB 6 // ENB PWM Motor Direito
+#define IN1 8 // DIR Motor Esquerdo
+#define IN2 8 // DIR Motor Esquerdo
 
-#define IN1 7 // DIR Motor Esquerdo
-#define IN2 7 // DIR Motor Esquerdo
-
-#define IN3 8 // DIR Motor Direito
-#define IN4 8 // DIR Motor Direito
+#define IN3 7 // DIR Motor Direito
+#define IN4 7 // DIR Motor Direito
 
 #define xshutPinsE 12
 #define xshutPinsC 9
@@ -48,9 +46,7 @@ unsigned long time;
 
 float MAX_DELTA = 40;
 
-float MAX_VOLTAGE = 100;    // em voltagem
-float MIN_PERCENT_DIR = 35; // em porcentagem
-float MIN_PERCENT_ESQ = 50;
+float MAX_VOLTAGE = 120; // em voltagem
 
 double delta;
 
@@ -65,20 +61,45 @@ double kd = 0.005;
 double valor_porcentagemD;
 double valor_porcentagemE;
 
+void (*reset)(void) = 0;
+
 void ler_sensores()
 {
-  distanciaE = (sensorE.read() - 20) / 10;
+  distanciaE = (sensorE.read() - 20) / 10.0;
+
+  if (sensorE.timeoutOccurred())
+  {
+    reset();
+  }
+
   if (distanciaE > 400)
   {
-    distanciaE = (sensorE.read() - 20) / 10;
+    distanciaE = (sensorE.read() - 20) / 10.0;
   }
-  sensorE.timeoutOccurred() ? distanciaE = 400 : distanciaE = distanciaE;
 
-  distanciaD = (sensorD.read() - 20) / 10;
-  sensorD.timeoutOccurred() ? distanciaD = 400 : distanciaD = distanciaD;
+  distanciaD = (sensorD.read() - 20) / 10.0;
 
-  distanciaC = (sensorC.read()) / 10;
-  sensorC.timeoutOccurred() ? distanciaC = 400 : distanciaC = distanciaC;
+  if (sensorD.timeoutOccurred())
+  {
+    reset();
+  }
+
+  if (distanciaD > 400)
+  {
+    distanciaD = (sensorD.read() - 20) / 10.0;
+  }
+
+  distanciaC = (sensorC.read()) / 10.0;
+
+  if (sensorC.timeoutOccurred())
+  {
+    reset();
+  }
+
+  if (distanciaC > 400)
+  {
+    distanciaC =  (sensorC.read()) / 10.0;
+  }
 
   delta = distanciaE - distanciaD;
 }
@@ -102,7 +123,7 @@ void imprimeDistancias()
 
 float tratamento(float vel)
 {
-  vel = min(vel, 100);
+  vel = min(vel, 120);
   vel = max(vel, 0);
   vel = (vel)*MAX_VOLTAGE / 100;
   return vel;
@@ -110,8 +131,6 @@ float tratamento(float vel)
 
 void acelera(float vel_esquerda, float vel_direita, int ativa = 0)
 {
-  // int vel_direita_int = ceil(tratamento((vel_direita* OutputC / MAX_VOLTAGE), MIN_VOLTAGE_DIR));
-  // int vel_esquerda_int = ceil(tratamento((vel_esquerda* OutputC / MAX_VOLTAGE), MIN_VOLTAGE_ESQ));
 
   int vel_direita_int = round(tratamento((vel_direita)));
   int vel_esquerda_int = round(tratamento((vel_esquerda)));
@@ -227,21 +246,21 @@ void acompanha_parede()
   {
     acelera(0, 80);
     delay(150);
-    acelera(95, 0);
+    acelera(110, 0);
     delay(250);
     parar();
     delay(150);
   }
   else if (distanciaD >= 10)
   {
-    acelera(95, 60);
+    acelera(95, 70);
     delay(200);
     parar();
     delay(100);
     ler_sensores();
     if (distanciaC > 4)
     {
-      acelera(95, 70);
+      acelera(95, 75);
       delay(50);
       parar();
       delay(100);
@@ -258,7 +277,7 @@ void acompanha_parede()
   }
   else if (distanciaD >= 7)
   {
-    acelera(95, 65);
+    acelera(110, 85);
     delay(175);
     parar();
     delay(100);
@@ -267,7 +286,7 @@ void acompanha_parede()
   {
     digitalWrite(IN1, HIGH);
     digitalWrite(IN3, LOW);
-    acelera(95, 95);
+    acelera(120 , 120);
     delay(100);
     parar();
     delay(150);
@@ -275,13 +294,12 @@ void acompanha_parede()
   }
   else
   {
-    acelera(70, 90);
+    acelera(90, 100);
     delay(200);
     parar();
     delay(100);
   }
 }
-
 
 void sentido_esquerdo()
 {
@@ -373,7 +391,7 @@ void setup()
   sensorC.startContinuous(50);
 
   delay(2000);
-  acelera(75, 75);
+  acelera(100, 100);
   delay(350);
   ler_sensores();
   imprimeDistancias();
@@ -418,7 +436,7 @@ void loop()
     while (distanciaC < 15)
     {
       ler_sensores();
-      acelera(95, 95);
+      acelera(120, 120);
       delay(100);
       parar();
       delay(75);
@@ -428,7 +446,7 @@ void loop()
     frente();
   }
   // else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 5 && distanciaC < 6 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 5)
-  else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) +10  && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 10)
+  else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 10 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 10)
   {
     acelera(0, 0);
     digitalWrite(LED_BUILTIN, HIGH);
@@ -438,7 +456,7 @@ void loop()
     while (distanciaE < 15)
     {
       ler_sensores();
-      acelera(95, 95);
+      acelera(120, 120);
       delay(100);
 
       parar();
