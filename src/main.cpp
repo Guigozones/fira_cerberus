@@ -273,8 +273,14 @@ void acompanha_parede()
     delay(100);
     frente();
   }
-  else
+  else if(distanciaC > 25)
   {
+    acelera(85 , 75);
+    delay(25);
+    // parar();
+    // delay(100);
+  }
+  else {
     acelera(100 , 100);
     delay(100);
     parar();
@@ -372,8 +378,8 @@ void setup()
   sensorC.startContinuous(50);
   ler_sensores();
   tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  if (tamanho_pista > 80){
-    delay(2000);
+  if (tamanho_pista > 100){
+    delay(1000);
     acelera(75, 75);
     delay(350);
     ler_sensores();
@@ -384,14 +390,16 @@ void setup()
   // delay(350);
   // ler_sensores();
   // imprimeDistancias();
-  tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  if (tamanho_pista > 100)
-  {
-    acelera(0, 0);
-    delay(100);
-    ler_sensores();
-    tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  }
+  
+  //teste
+  // tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
+  // if (tamanho_pista > 100)
+  // {
+  //   acelera(0, 0);
+  //   delay(100);
+  //   ler_sensores();
+  //   tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
+  // }
 
   Serial.print("Tamanho da pista: ");
   Serial.println(tamanho_pista);
@@ -409,7 +417,7 @@ void setup()
 void loop()
 {
   ler_sensores();
-  imprimeDistancias();
+  // imprimeDistancias();
 
   ler_sensores();
 
@@ -435,7 +443,7 @@ void loop()
     }
     digitalWrite(IN1, LOW);
     digitalWrite(IN3, HIGH);
-    while (distanciaC < 15)
+    while (distanciaC < 25)
     {
       ler_sensores();
       acelera(110, 110);
