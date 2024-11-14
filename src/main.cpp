@@ -155,26 +155,7 @@ void parar()
 {
   acelera(0, 0);
 }
-void ajuste3(float delta)
-{
-  int i = 0;
-  int limite = 30;
-  int limite_b = 20;
-  while (delta > 0 && distanciaE < tamanho_pista && i < limite_b)
-  {
-    ler_sensores();
-    delta = distanciaE - distanciaD;
-    acelera(75, 50 + i);
-    i += 2;
-  }
-  while (delta < 0 && distanciaD < tamanho_pista && i < limite)
-  {
-    ler_sensores();
-    delta = distanciaE - distanciaD;
-    acelera(70 + i, 55 - i / 2);
-    i += 2;
-  }
-}
+
 
 void frente(int *vector = NULL)
 {
@@ -242,50 +223,50 @@ void ajuste2(float delta)
 
 void acompanha_parede()
 {
-  if (distanciaD  > 20)
+  if (distanciaE  > 20)
   {
-    acelera(0, 80);
+    acelera(80, 0);
     delay(150);
-    acelera(110, 0);
+    acelera(0,110);
     delay(250);
     parar();
     delay(150);
   }
-  else if (distanciaD >= 11)
+  else if (distanciaE >= 11)
   {
-    acelera(120, 70);
+    acelera(70, 120);
     delay(200);
     parar();
     delay(75);
     ler_sensores();
-    if (distanciaC > 4)
+    if (distanciaE > 4)
     {
-      acelera(95, 80);
+      acelera(80, 95);
       delay(75);
       parar();
       delay(100);
     }
-    else if(distanciaC < 4)
+    else if(distanciaE < 4)
     {
       back();
-      acelera(80, 60);
+      acelera(60, 80);
       delay(150);
       parar();
       delay(200);
       frente();
     }
   }
-  else if (distanciaD >= 7)
+  else if (distanciaE >= 7)
   {
-    acelera(110, 85);
+    acelera( 85, 110);
     delay(150);
     parar();
     delay(100);
   }
-  else if (distanciaD <= 3.5 )
+  else if (distanciaE <= 3.5 )
   {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN3, LOW);
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN3, HIGH);
     acelera(120 , 120);
     delay(50);
     parar();
@@ -442,9 +423,9 @@ void loop()
     if(distanciaC < 5){
       
     back();
-    acelera(95, 50);
+    acelera(50, 95);
     delay(150);
-    acelera(70, 95);
+    acelera(95, 70);
     delay(75);
     parar();
     delay(150);
@@ -452,8 +433,8 @@ void loop()
     frente();
   
     }
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN3, LOW);
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN3, HIGH);
     while (distanciaC < 15)
     {
       ler_sensores();
