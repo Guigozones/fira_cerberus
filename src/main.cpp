@@ -63,16 +63,6 @@ double valor_porcentagemE;
 
 void (*reset)(void) = 0;
 
-void delayWithMillis(unsigned long delayTime) {
-    unsigned long startMillis = millis(); // Armazena o tempo inicial
-
-    // Enquanto o tempo de espera não passou, bloqueia o código
-    while (millis() - startMillis < delayTime) {
-        // Não faz nada, apenas aguarda
-    }
-}
-
-
 void ler_sensores()
 {
   distanciaE = (sensorE.read() - 20) / 10.0;
@@ -184,23 +174,23 @@ void ajuste2(float delta)
     if (delta < -tamanho_pista * 0.3)
     {
       acelera(85, 58);
-      delayWithMillis(250);
+      delay(250);
       parar();
-      delayWithMillis(1000);
+      delay(1000);
     }
     if (delta > -tamanho_pista * 0.3 && delta < -tamanho_pista * 0.15)
     {
       acelera(80, 58);
-      delayWithMillis(250);
+      delay(250);
       parar();
-      delayWithMillis(1000);
+      delay(1000);
     }
     else if (delta > -tamanho_pista * 0.15)
     {
       acelera(75, 58);
-      delayWithMillis(250);
+      delay(250);
       parar();
-      delayWithMillis(1000);
+      delay(1000);
     }
   }
 
@@ -210,23 +200,23 @@ void ajuste2(float delta)
     if (delta > tamanho_pista * 0.3)
     {
       acelera(65, 90);
-      delayWithMillis(250);
+      delay(250);
       parar();
-      delayWithMillis(1000);
+      delay(1000);
     }
     if (delta < tamanho_pista * 0.3 && delta > tamanho_pista * 0.15)
     {
       acelera(65, 85);
-      delayWithMillis(250);
+      delay(250);
       parar();
-      delayWithMillis(1000);
+      delay(1000);
     }
     else if (delta < tamanho_pista * 0.15)
     {
       acelera(65, 75);
-      delayWithMillis(250);
+      delay(250);
       parar();
-      delayWithMillis(150);
+      delay(150);
     }
   }
 }
@@ -236,59 +226,65 @@ void acompanha_parede()
   if (distanciaE  > 20)
   {
     acelera(80, 0);
-    delayWithMillis(150);
+    delay(150);
     acelera(0,110);
-    delayWithMillis(250);
+    delay(250);
     parar();
-    delayWithMillis(150);
+    delay(150);
   }
   else if (distanciaE >= 11)
   {
     acelera(70, 120);
-    delayWithMillis(200);
+    delay(200);
     parar();
-    delayWithMillis(75);
+    delay(75);
     ler_sensores();
     if (distanciaE > 4)
     {
       acelera(80, 95);
-      delayWithMillis(75);
+      delay(75);
       parar();
-      delayWithMillis(100);
+      delay(100);
     }
     else if(distanciaE < 4)
     {
       back();
       acelera(60, 80);
-      delayWithMillis(150);
+      delay(150);
       parar();
-      delayWithMillis(200);
+      delay(200);
       frente();
     }
   }
   else if (distanciaE >= 7)
   {
     acelera( 85, 110);
-    delayWithMillis(150);
+    delay(150);
     parar();
-    delayWithMillis(100);
+    delay(100);
   }
   else if (distanciaE <= 3.5 )
   {
     digitalWrite(IN1, LOW);
     digitalWrite(IN3, HIGH);
     acelera(120 , 120);
-    delayWithMillis(50);
+    delay(50);
     parar();
-    delayWithMillis(100);
+    delay(100);
     frente();
   }
-  else
+  else if(distanciaC > 25)
   {
+    acelera(85 , 75);
+    delay(25);
+    // parar();
+    // delay(100);
+  }
+  else {
     acelera(100 , 100);
-    delayWithMillis(100);
+    delay(100);
     parar();
-    delayWithMillis(100);
+    delay(100);
   }
 }
 
@@ -334,7 +330,7 @@ void setup()
   digitalWrite(A3, HIGH);
 
   pinMode(xshutPinsE, INPUT);
-  delayWithMillis(10);
+  delay(10);
 
   sensorE.setTimeout(500);
   if (!sensorE.init())
@@ -350,7 +346,7 @@ void setup()
   sensorE.startContinuous(50);
 
   pinMode(xshutPinsD, INPUT);
-  delayWithMillis(10);
+  delay(10);
 
   sensorD.setTimeout(500);
   if (!sensorD.init())
@@ -366,7 +362,7 @@ void setup()
   sensorD.startContinuous(50);
 
   pinMode(xshutPinsC, INPUT);
-  delayWithMillis(10);
+  delay(10);
 
   sensorC.setTimeout(500);
   if (!sensorC.init())
@@ -382,10 +378,10 @@ void setup()
   sensorC.startContinuous(50);
   ler_sensores();
   tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  if (tamanho_pista > 80){
-    delayWithMillis(2000);
+  if (tamanho_pista > 100){
+    delay(1000);
     acelera(75, 75);
-    delayWithMillis(350);
+    delay(350);
     ler_sensores();
     imprimeDistancias();
   }
@@ -394,14 +390,16 @@ void setup()
   // delay(350);
   // ler_sensores();
   // imprimeDistancias();
-  tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  if (tamanho_pista > 100)
-  {
-    acelera(0, 0);
-    delayWithMillis(100);
-    ler_sensores();
-    tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  }
+  
+  //teste
+  // tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
+  // if (tamanho_pista > 100)
+  // {
+  //   acelera(0, 0);
+  //   delay(100);
+  //   ler_sensores();
+  //   tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
+  // }
 
   Serial.print("Tamanho da pista: ");
   Serial.println(tamanho_pista);
@@ -419,7 +417,7 @@ void setup()
 void loop()
 {
   ler_sensores();
-  imprimeDistancias();
+  // imprimeDistancias();
 
   ler_sensores();
 
@@ -434,27 +432,27 @@ void loop()
       
     back();
     acelera(50, 95);
-    delayWithMillis(150);
+    delay(150);
     acelera(95, 70);
-    delayWithMillis(75);
+    delay(75);
     parar();
-    delayWithMillis(150);
+    delay(150);
 
     frente();
   
     }
     digitalWrite(IN1, LOW);
     digitalWrite(IN3, HIGH);
-    while (distanciaC < 15)
+    while (distanciaC < 25)
     {
       ler_sensores();
       acelera(110, 110);
-      delayWithMillis(75);
+      delay(75);
       parar();
-      delayWithMillis(75);
+      delay(75);
     }
     parar();
-    delayWithMillis(250);
+    delay(250);
     frente();
   }
   // else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 5 && distanciaC < 6 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 5)
