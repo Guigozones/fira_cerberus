@@ -5,6 +5,8 @@
 #include <VL53L1X.h>
 #include <HardwareSerial.h>
 
+
+
 #define ENA 6 // ENA PWM Motor Esquerdo
 #define ENB 5 // ENB PWM Motor Direito
 
@@ -24,6 +26,8 @@ VL53L1X sensorE;
 VL53L1X sensorC;
 VL53L1X sensorD;
 
+int variavel;
+int variavel2;
 // Variáveis Globais
 float tamanho_carrinho = 13.5;
 float tamanho_pista;
@@ -223,14 +227,19 @@ void ajuste2(float delta)
 
 void acompanha_parede()
 {
-  if (distanciaE  > 20)
+  if (distanciaE  > 20 && distanciaE < 300 && variavel == 0)
   {
     acelera(80, 0);
     delay(150);
-    acelera(0,110);
-    delay(250);
     parar();
-    delay(150);
+    delay(50);
+    ler_sensores();
+    if(distanciaE> 15){
+      acelera(0,110);
+      delay(250);
+      parar();
+      delay(150);
+    }
   }
   else if (distanciaE >= 11)
   {
@@ -241,7 +250,7 @@ void acompanha_parede()
     ler_sensores();
     if (distanciaE > 4)
     {
-      acelera(80, 95);
+      acelera(85, 100);
       delay(75);
       parar();
       delay(100);
@@ -263,29 +272,35 @@ void acompanha_parede()
     parar();
     delay(100);
   }
-  else if (distanciaE <= 3.5 )
+  else if (distanciaE <= 4 )
   {
     digitalWrite(IN1, LOW);
     digitalWrite(IN3, HIGH);
-    acelera(120 , 120);
-    delay(50);
-    parar();
-    delay(100);
+    while(distanciaE <= 4){
+      ler_sensores();
+      acelera(100 , 100);
+      delay(70); 
+      parar();
+      delay(75);
+      variavel = 1;
+    }
     frente();
   }
   else if(distanciaC > 25)
   {
-    acelera(85 , 75);
-    delay(25);
+    acelera(88 , 70);
+    variavel = 0;
     // parar();
     // delay(100);
   }
   else {
-    acelera(100 , 100);
+    acelera(100 , 90);
     delay(100);
     parar();
-    delay(100);
+    delay(50);
+    variavel = 0;
   }
+  
 }
 
 void sentido_esquerdo()
@@ -377,14 +392,17 @@ void setup()
 
   sensorC.startContinuous(50);
   ler_sensores();
-  tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  if (tamanho_pista > 100){
-    delay(1000);
-    acelera(75, 75);
-    delay(350);
-    ler_sensores();
-    imprimeDistancias();
-  }
+  variavel = 1;
+  // tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
+  // if (tamanho_pista > 100){
+  //   delay(1000);
+  //   acelera(75, 75);
+  //   delay(350);
+  //   ler_sensores();
+  //   imprimeDistancias();
+  // }
+
+
   // delay(2000);
   // acelera(100, 100);
   // delay(350);
@@ -401,17 +419,17 @@ void setup()
   //   tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
   // }
 
-  Serial.print("Tamanho da pista: ");
-  Serial.println(tamanho_pista);
-  DIS_MAX = (distanciaD + distanciaE) / 2;
+  // Serial.print("Tamanho da pista: ");
+  // Serial.println(tamanho_pista);
+  // DIS_MAX = (distanciaD + distanciaE) / 2;
 
-  time = millis();
+  // time = millis();
   // last_time = time;
   // acelera(90,90);
   // delay(500);
   // tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+  // pinMode(LED_BUILTIN, OUTPUT);
+  // digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop()
