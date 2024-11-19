@@ -3,7 +3,7 @@
 #include <PinChangeInterrupt.h>
 #include <Wire.h>
 #include <VL53L1X.h>
-#include <HardwareSerial.h>
+#include <HardwareSerial.h> 
 
 
 
@@ -50,7 +50,7 @@ unsigned long time;
 
 float MAX_DELTA = 40;
 
-float MAX_VOLTAGE = 120; // em voltagem
+float MAX_VOLTAGE = 105; // em voltagem
 
 double delta;
 
@@ -230,12 +230,12 @@ void acompanha_parede()
   if (distanciaE  > 20 && distanciaE < 300 && variavel == 0)
   {
     acelera(80, 0);
-    delay(150);
+    delay(100);
     parar();
     delay(50);
     ler_sensores();
     if(distanciaE> 15){
-      acelera(0,110);
+      acelera(0, 90);
       delay(250);
       parar();
       delay(150);
@@ -243,7 +243,7 @@ void acompanha_parede()
   }
   else if (distanciaE >= 11)
   {
-    acelera(70, 120);
+    acelera(70, 100);
     delay(200);
     parar();
     delay(75);
@@ -267,19 +267,28 @@ void acompanha_parede()
   }
   else if (distanciaE >= 7)
   {
-    acelera( 85, 110);
+    acelera( 85, 100);
     delay(150);
     parar();
     delay(100);
   }
-  else if (distanciaE <= 4 )
+  else if (distanciaE <= 3.5 )
   {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN3, HIGH);
-    while(distanciaE <= 4){
+    
+    while(distanciaE <= 3.5){
       ler_sensores();
-      acelera(100 , 100);
-      delay(70); 
+      // parar();
+      // delay(100);
+      if(distanciaE < 0.5){
+        back();
+        acelera( 100, 100);
+        delay(50);
+        frente();
+      }
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN3, HIGH);
+      acelera(105 , 105);
+      delay(50); 
       parar();
       delay(75);
       variavel = 1;
@@ -288,13 +297,13 @@ void acompanha_parede()
   }
   else if(distanciaC > 25)
   {
-    acelera(88 , 70);
+    acelera(88 , 72);
     variavel = 0;
     // parar();
     // delay(100);
   }
   else {
-    acelera(100 , 90);
+    acelera(95 , 75);
     delay(100);
     parar();
     delay(50);
@@ -439,6 +448,8 @@ void loop()
 
   ler_sensores();
 
+  
+
   if (distanciaC >= 7)
   {
     acompanha_parede();
@@ -464,15 +475,19 @@ void loop()
     while (distanciaC < 25)
     {
       ler_sensores();
-      acelera(110, 110);
-      delay(75);
+      acelera(105, 105);
+      delay(100);
       parar();
       delay(75);
     }
     parar();
-    delay(250);
+    delay(100);
     frente();
   }
+
+
+
+
   // else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 5 && distanciaC < 6 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 5)
 //   else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 10 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 10)
 //   {
