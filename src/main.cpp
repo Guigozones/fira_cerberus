@@ -573,7 +573,7 @@ void loop()
     }
     digitalWrite(IN1, HIGH);
     digitalWrite(IN3, LOW);
-    while (distanciaC < 25)
+    while (distanciaC < 30)
     {
       ler_sensores();
       acelera(105, 105);
