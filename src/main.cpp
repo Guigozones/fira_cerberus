@@ -133,7 +133,7 @@ float tratamento(float vel)
   return vel;
 }
 
-void acelera(float vel_direita, float vel_esquerda, int ativa = 0)
+void acelera(float vel_esquerda, float vel_direita, int ativa = 0)
 {
 
   int vel_direita_int = round(tratamento((vel_direita)));
@@ -143,20 +143,6 @@ void acelera(float vel_direita, float vel_esquerda, int ativa = 0)
 
   analogWrite(ENB, vel_direita_int);
 }
-
-
-
-
-// void acelera(float vel_esquerda, float vel_direita, int ativa = 0)
-// {
-
-//   int vel_direita_int = round(tratamento((vel_direita)));
-//   int vel_esquerda_int = round(tratamento((vel_esquerda)));
-
-//   analogWrite(ENA, vel_esquerda_int);
-
-//   analogWrite(ENB, vel_direita_int);
-// }
 
 void back()
 {
@@ -239,180 +225,91 @@ void ajuste2(float delta)
   }
 }
 
-// void acompanha_parede()
-// {
-//   if (distanciaE  > 20 && distanciaE < 300 && variavel == 0)
-//   {
-//     acelera(80, 0);
-//     delay(100);
-//     parar();
-//     delay(50);
-//     ler_sensores();
-//     if(distanciaE> 15){
-//       acelera(0, 90);
-//       delay(250);
-//       parar();
-//       delay(150);
-//     }
-//   }
-//   else if (distanciaE >= 11)
-//   {
-//     acelera(70, 100);
-//     delay(200);
-//     parar();
-//     delay(75);
-//     ler_sensores();
-//     if (distanciaE > 4)
-//     {
-//       acelera(85, 100);
-//       delay(75);
-//       parar();
-//       delay(100);
-//     }
-//     else if(distanciaE < 4)
-//     {
-//       back();
-//       acelera(60, 80);
-//       delay(150);
-//       parar();
-//       delay(200);
-//       frente();
-//     }
-//   }
-//   else if (distanciaE >= 7)
-//   {
-//     acelera( 85, 100);
-//     delay(150);
-//     parar();
-//     delay(100);
-//   }
-//   else if (distanciaE <= 3.5 )
-//   {
-    
-//     while(distanciaE <= 3.5){
-//       ler_sensores();
-//       // parar();
-//       // delay(100);
-//       if(distanciaE < 0.5){
-//         back();
-//         acelera( 100, 100);
-//         delay(50);
-//         frente();
-//       }
-//       digitalWrite(IN1, LOW);
-//       digitalWrite(IN3, HIGH);
-//       acelera(105 , 105);
-//       delay(50); 
-//       parar();
-//       delay(75);
-//       variavel = 1;
-//     }
-//     frente();
-//   }
-//   else if(distanciaC > 25)
-//   {
-//     acelera(88 , 72);
-//     variavel = 0;
-//     // parar();
-//     // delay(100);
-//   }
-//   else {
-//     acelera(95 , 75);
-//     delay(100);
-//     parar();
-//     delay(50);
-//     variavel = 0;
-//   }
-  
-// }
-
 void acompanha_parede()
 {
-  if (distanciaD > 20 && distanciaD < 300 && variavel == 0) // Alterado aqui
+  if (distanciaD  > 20 && distanciaD < 300 && variavel == 0)
   {
-    acelera(80, 0);
+    acelera(0, 80);
     delay(100);
     parar();
     delay(50);
     ler_sensores();
-    if(distanciaD > 15) // Alterado aqui
-    {
-      acelera(0, 90);
+    if(distanciaD> 13){
+      acelera(105, 0);
       delay(250);
       parar();
-      delay(75);
+      delay(150);
     }
   }
-  else if (distanciaD >= 11) // Alterado aqui
+  else if (distanciaD >= 11)
   {
-    acelera(68 , 100);
+    acelera(105, 71);
     delay(130);
     parar();
-    delay(50);
+    delay(75);
     ler_sensores();
-    if (distanciaD > 4) // Alterado aqui
+    if (distanciaC > 4)
     {
-      acelera(85, 90);
+      acelera(100, 85);
       delay(75);
       parar();
-      delay(50);
+      delay(100);
     }
-    else if(distanciaD < 4) // Alterado aqui
+    else if(distanciaC < 4)
     {
       back();
-      acelera(60, 80);
+      acelera(80, 60);
       delay(150);
       parar();
-      delay(90);
+      delay(200);
       frente();
     }
   }
-  else if (distanciaD >= 7) // Alterado aqui
+  else if (distanciaD >= 7)
   {
-    acelera(80, 100);
+    acelera( 100, 90);
     delay(150);
     parar();
-    delay(50);
+    delay(100);
   }
-  else if (distanciaD <= 3 ) // Alterado aqui
+  else if (distanciaD <= 3.5 )
   {
     
-    while(distanciaD <= 3) // Alterado aqui
-    {
+    while(distanciaD <= 3.5){
       ler_sensores();
       // parar();
       // delay(100);
-      if(distanciaD < 0.5) // Alterado aqui
-      {
+      if(distanciaD < 0.5){
         back();
-        acelera(100, 100);
+        acelera( 100, 100);
         delay(50);
         frente();
       }
       digitalWrite(IN1, HIGH);
       digitalWrite(IN3, LOW);
       acelera(105 , 105);
-      delay(30); 
+      delay(50); 
       parar();
-      delay(35);
+      delay(75);
       variavel = 1;
     }
     frente();
   }
   else if(distanciaC > 25)
   {
-    acelera(74 , 74);
+    acelera(78 , 82);
     variavel = 0;
     // parar();
     // delay(100);
   }
   else {
-    acelera(86 , 75);
+    acelera(95 , 80);
     delay(125);
     parar();
-    delay(25);
+    delay(50);
     variavel = 0;
   }
+  
 }
 
 void sentido_esquerdo()
@@ -551,6 +448,8 @@ void loop()
 
   ler_sensores();
 
+  
+
   if (distanciaC >= 7)
   {
     acompanha_parede();
@@ -558,31 +457,35 @@ void loop()
   // else if 
   else
   {
-    if(distanciaC < 5){
+    if(distanciaD < 8){
+      back();
+      acelera( 65 , 105);
+      delay(200);
+    }
+    ler_sensores();
+    if(distanciaC < 6){
       
-    back();
-    acelera(50, 95);
-    delay(125);
-    acelera(85, 70);
-    delay(75);
-    parar();
-    delay(150);
+      back();
+      acelera(95, 95);
+      delay(200);
+      parar();
+      delay(150);
 
-    frente();
+      frente();
   
     }
     digitalWrite(IN1, HIGH);
     digitalWrite(IN3, LOW);
-    while (distanciaC < 30)
+    while (distanciaC < 25)
     {
       ler_sensores();
       acelera(105, 105);
-      delay(30);
+      delay(100);
       parar();
-      delay(35);
+      delay(75);
     }
     parar();
-    delay(50);
+    delay(100);
     frente();
   }
 
@@ -622,4 +525,4 @@ void loop()
 
 //     frente();
 //   }
-}
+} 
