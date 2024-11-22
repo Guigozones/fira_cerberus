@@ -3,7 +3,9 @@
 #include <PinChangeInterrupt.h>
 #include <Wire.h>
 #include <VL53L1X.h>
-#include <HardwareSerial.h>
+#include <HardwareSerial.h> 
+
+
 
 #define ENA 6 // ENA PWM Motor Esquerdo
 #define ENB 5 // ENB PWM Motor Direito
@@ -100,7 +102,7 @@ void ler_sensores()
 
   if (distanciaC > 400)
   {
-    distanciaC = (sensorC.read()) / 10.0;
+    distanciaC =  (sensorC.read()) / 10.0;
   }
 
   delta = distanciaE - distanciaD;
@@ -157,6 +159,7 @@ void parar()
 {
   acelera(0, 0);
 }
+
 
 void frente(int *vector = NULL)
 {
@@ -224,118 +227,89 @@ void ajuste2(float delta)
 
 void acompanha_parede()
 {
-  if (distanciaD > 20 && distanciaD < 300 && variavel == 0)
+  if (distanciaE  > 20 && distanciaE < 300 && variavel == 0)
   {
-    ler_sensores();
-    
-    acelera(0, 85);
+    acelera(80, 0);
     delay(100);
     parar();
     delay(50);
     ler_sensores();
-    if (distanciaD > 13)
-    {
-      acelera(90, 0);
-      delay(275);
+    if(distanciaE> 15){
+      acelera(0, 85);
+      delay(250);
       parar();
       delay(150);
-      parar();
-      delay(100);
-      ler_sensores();
-      if(distanciaC > 8){
-        acelera(80 , 70);
-        delay(100);
-        parar();
-        delay(100);
-      }
-      
     }
   }
-  else if (distanciaD >= 13)
+  else if (distanciaE >= 11)
   {
-    acelera(105, 73);
-    delay(125);
+    acelera(70, 100);
+    delay(200);
     parar();
     delay(75);
     ler_sensores();
-    if (distanciaC > 4)
+    if (distanciaE > 4)
     {
-      acelera(100, 85);
+      acelera(85, 100);
       delay(75);
       parar();
       delay(100);
     }
-    else if (distanciaC < 4)
+    else if(distanciaE < 4)
     {
       back();
-      acelera(80, 60);
+      acelera(60, 80);
       delay(150);
       parar();
       delay(200);
       frente();
     }
   }
-  else if (distanciaD >= 10)
+  else if (distanciaE >= 7)
   {
-    acelera(105, 73);
-    delay(200);
-    parar();
-    delay(100);
-    acelera(72, 95);
-    delay(100);
-    parar();
-    delay(150);
-  }
-  else if (distanciaD >= 8)
-  {
-    acelera(105, 90);
+    acelera( 85, 100);
     delay(150);
     parar();
     delay(100);
   }
-  else if (distanciaD <= 3.5)
+  else if (distanciaE <= 3.5 )
   {
-
-    while (distanciaD <= 3.5)
-    {
+    
+    while(distanciaE <= 3.5){
       ler_sensores();
       // parar();
       // delay(100);
-      if (distanciaD < 0.5)
-      {
+      if(distanciaE < 0.5){
         back();
-        acelera(100, 100);
+        acelera( 100, 60);
         delay(50);
         frente();
       }
-      digitalWrite(IN1, HIGH);
-      digitalWrite(IN3, LOW);
-      acelera(105, 105);
-      delay(50);
+      digitalWrite(IN1, LOW);
+      digitalWrite(IN3, HIGH);
+      acelera(105 , 105);
+      delay(50); 
       parar();
       delay(75);
       variavel = 1;
-      ler_sensores();
     }
     frente();
   }
-  else if (distanciaC > 25)
+  else if(distanciaC > 25)
   {
-    acelera(80, 75);
+    acelera(82 , 72);
     variavel = 0;
     // parar();
     // delay(100);
   }
-  else
-  {
-    parar();
-    delay(75);
-    acelera(90, 73);
-    delay(125);
+  else {
+    acelera(90 , 72);
+    delay(100);
     parar();
     delay(50);
     variavel = 0;
   }
+  
 }
 
 void sentido_esquerdo()
@@ -437,21 +411,22 @@ void setup()
   //   imprimeDistancias();
   // }
 
+
   // delay(2000);
   // acelera(100, 100);
   // delay(350);
   // ler_sensores();
   // imprimeDistancias();
-
-  // teste
-  //  tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  //  if (tamanho_pista > 100)
-  //  {
-  //    acelera(0, 0);
-  //    delay(100);
-  //    ler_sensores();
-  //    tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
-  //  }
+  
+  //teste
+  // tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
+  // if (tamanho_pista > 100)
+  // {
+  //   acelera(0, 0);
+  //   delay(100);
+  //   ler_sensores();
+  //   tamanho_pista = distanciaD + distanciaE + tamanho_carrinho;
+  // }
 
   // Serial.print("Tamanho da pista: ");
   // Serial.println(tamanho_pista);
@@ -473,32 +448,30 @@ void loop()
 
   ler_sensores();
 
+  
+
   if (distanciaC >= 7)
   {
     acompanha_parede();
   }
-  // else if
+  // else if 
   else
   {
-    if (distanciaD < 8)
-    {
-      back();
-      acelera(65, 105);
-      delay(200);
-    }
-    else if (distanciaC < 6)
-    {
+    if(distanciaC < 5){
+      
+    back();
+    acelera(50, 95);
+    delay(150);
+    acelera(95, 70);
+    delay(75);
+    parar();
+    delay(150);
 
-      back();
-      acelera(95, 95);
-      delay(150);
-      parar();
-      delay(150);
-
-      frente();
+    frente();
+  
     }
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN3, LOW);
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN3, HIGH);
     while (distanciaC < 25)
     {
       ler_sensores();
@@ -506,44 +479,47 @@ void loop()
       delay(100);
       parar();
       delay(75);
-      ler_sensores();
+       ler_sensores();
     }
     parar();
     delay(100);
     frente();
   }
 
+
+
+
   // else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 5 && distanciaC < 6 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 5)
-  //   else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 10 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 10)
-  //   {
-  //     acelera(0, 0);
-  //     digitalWrite(LED_BUILTIN, HIGH);
-  //     // while(1);
-  //     digitalWrite(IN1, HIGH);
-  //     digitalWrite(IN3, LOW);
-  //     while (distanciaE < 15)
-  //     {
-  //       ler_sensores();
-  //       acelera(120, 120);
-  //       delay(100);
+//   else if (distanciaD < ((tamanho_pista - tamanho_carrinho) / 2) + 10 && distanciaE < ((tamanho_pista - tamanho_carrinho) / 2) + 10)
+//   {
+//     acelera(0, 0);
+//     digitalWrite(LED_BUILTIN, HIGH);
+//     // while(1);
+//     digitalWrite(IN1, HIGH);
+//     digitalWrite(IN3, LOW);
+//     while (distanciaE < 15)
+//     {
+//       ler_sensores();
+//       acelera(120, 120);
+//       delay(100);
 
-  //       parar();
-  //       delay(100);
-  //     }
-  //     frente();
-  //     parar();
-  //     delay(75);
-  //   }
-  //   else
-  //   {
-  //     back();
-  //     acelera(95, 50);
-  //     delay(150);
-  //     acelera(70, 95);
-  //     delay(75);
-  //     parar();
-  //     delay(150);
+//       parar();
+//       delay(100);
+//     }
+//     frente();
+//     parar();
+//     delay(75);
+//   }
+//   else
+//   {
+//     back();
+//     acelera(95, 50);
+//     delay(150);
+//     acelera(70, 95);
+//     delay(75);
+//     parar();
+//     delay(150);
 
-  //     frente();
-  //   }
+//     frente();
+//   }
 }
